@@ -3006,6 +3006,7 @@ int fake_clock_gettime(clockid_t clk_id, struct timespec *tp)
       {
         /* increment time with every time() call*/
         next_time(tp, &user_per_tick_inc);
+        fprintf(stderr, "Whohooo!\n");
       }
       else
       {
