@@ -2814,6 +2814,29 @@ int read_config_file()
   return 0;
 }
 
+int write_clock_to_file(char* path, struct timespec *tp){
+    int mode =  O_WRONLY | O_CREAT | O_TRUNC;
+    int fd = open(path, mode);
+
+    if (fd == -1){
+       perror("libfaketime - Error opening file");
+       return -1;
+    }
+
+    size_t written = 0;
+    int bytes = 0;
+    while ((bytes = write(fd, (char*) tp + written, sizeof(struct timespec) - written)) != -1){
+        written += bytes;
+
+        if (written >= sizeof(struct timespec)){
+            close(fd);
+            break;
+        }
+    }
+    close(fd);
+    return 0;
+}
+
 int fake_clock_gettime(clockid_t clk_id, struct timespec *tp)
 {
   /* variables used for caching, introduced in version 0.6 */
@@ -3007,6 +3030,7 @@ int fake_clock_gettime(clockid_t clk_id, struct timespec *tp)
         /* increment time with every time() call*/
         next_time(tp, &user_per_tick_inc);
         fprintf(stderr, "libfaketime: %ld.%ld\n", tp->tv_sec, tp->tv_nsec);
+        write_clock_to_file("/fooclock", tp);
       }
       else
       {
