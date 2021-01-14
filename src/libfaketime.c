@@ -3030,7 +3030,7 @@ int fake_clock_gettime(clockid_t clk_id, struct timespec *tp)
         /* increment time with every time() call*/
         next_time(tp, &user_per_tick_inc);
         fprintf(stderr, "libfaketime: %ld.%ld\n", tp->tv_sec, tp->tv_nsec);
-        write_clock_to_file("/fooclock", tp);
+        write_clock_to_file("/mnt/src/fooclock", tp);
       }
       else
       {
